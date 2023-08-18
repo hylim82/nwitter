@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import firebase from './firebase';
-console.log(firebase);
+import { initFirebase } from 'fbase';
+
+
+// Firebase 앱 초기화
+initFirebase();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
