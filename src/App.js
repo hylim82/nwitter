@@ -6,12 +6,14 @@ function App() {
   // console.log(authService.currentUser);
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(null);
   console.log(authService.currentUser);
   //TODO : useEffect는 뭐지??
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if(user) {
         setIsLoggedIn(true);
+        setUserId(user.uid);
       } else {
         setIsLoggedIn(false);
       }
@@ -20,7 +22,7 @@ function App() {
   }, []);
   return (
     <div>
-      {init ?<AppRouter isLoggedIn={isLoggedIn} /> : "Initializing..."}
+      {init ? <AppRouter isLoggedIn={isLoggedIn} userId={userId} /> : "Initializing..."}
       <footer>&copy; {new Date().getFullYear()} Nwitter </footer>
     </div>
   );
