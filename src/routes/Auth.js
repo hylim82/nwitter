@@ -1,45 +1,61 @@
 import React, { useState } from 'react';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'; // Firebase Authentication 모듈 가져오기
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [newAccount, setNewAccount] = useState(true);
+  const auth = getAuth(); // Firebase 인증 객체 가져오기
+
   const onChange = (event) => {
-    //console.log(event.target.name); // 입력이 제대로 동작되는지 확인
-    const {target:{name, value}} = event; // TODO : 이게 이해가 잘안됨
-    // console.log(value); // 입력이 제대로 동작되는지 확인
-    if(name === 'email') {
+    const { target: { name, value } } = event;
+    if (name === 'email') {
       setEmail(value);
     } else if (name === 'password') {
       setPassword(value);
     }
-  }
-  const onSubmit = (event) => {
+  };
+
+  const onSubmit = async (event) => {
     event.preventDefault();
-  }
+    try {
+      let data;
+      if (newAccount) {
+        // create account
+        data = await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        // Log in
+        data = await signInWithEmailAndPassword(auth, email, password);
+      }
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
       Auth Page
       <form onSubmit={onSubmit}>
-        <input 
-          name="email" 
-          type="email" 
+        <input
+          name="email"
+          type="email"
           placeholder='Email' required
           value={email}
-          onChange={onChange} // 변경될 때마다, onChange event발생
-          />
-        <input 
-          name="password" 
-          type="password" 
+          onChange={onChange}
+        />
+        <input
+          name="password"
+          type="password"
           placeholder='Password' required
           value={password}
-          onChange={onChange} // 변경될 때마다, onChange event발생
-          />
-        <input type="submit" value="Log in"/>
+          onChange={onChange}
+        />
+        <input type="submit" value={newAccount === true ? "Create Account" : "Log in"} />
       </form>
       <div>
-        <button>Continute with google</button>
-        <button>Continute with google</button>
+        <button>Continue with Google</button>
+        <button>Continue with Apple</button>
       </div>
     </div>
   );
