@@ -16,9 +16,11 @@ const firebaseConfig = {
 };
 // Firebase 앱 초기화
 const initFb = initializeApp(firebaseConfig);
-console.log(initFb);
+// console.log(initFb);
 
 const auth = getAuth(initFb); // initFb는 initFirebase()로 초기화한 Firebase 앱 객체
+//console.log(auth.currentUser); // 현재 사용자의 정보, 없으면 null
+export default auth; 
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

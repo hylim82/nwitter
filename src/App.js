@@ -1,8 +1,10 @@
 import { useState } from "react";
 import AppRouter from "./components/Router";
+import authService from 'index';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // console.log(authService.currentUser);
+  const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser);
   
   return (
     <div>
