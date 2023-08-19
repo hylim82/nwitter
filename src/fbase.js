@@ -1,20 +1,30 @@
 // fbase.js
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import "firebase/auth";
+import "firebase/firestore";
 
+// TODO : env를 사용하는 방법으로 변경필요 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_APIKEY,
-  authDomain: process.env.REACT_APP_AUTHDOMAIN,
-  projectId: process.env.REACT_APP_PROJECTID,
-  storageBucket: process.env.REACT_APP_STORAGEBUCKET,
-  messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
-  appId: process.env.REACT_APP_APPID,
-  measurementId: process.env.REACT_APP_MEASUREMENTID,
+  apiKey: "AIzaSyAkxXPG-9I6G6GgYjYRQeN2tCH1uobW7wc",
+  authDomain: "nwitter-d605a.firebaseapp.com",
+  projectId: "nwitter-d605a",
+  storageBucket: "nwitter-d605a.appspot.com",
+  messagingSenderId: "499639799144",
+  appId: "1:499639799144:web:99fcbdf754914efd085add",
+  measurementId: "G-2KQ7F01X8L"
 };
+// Firebase 앱 초기화
+const initFb = initializeApp(firebaseConfig);
+// console.log(initFb);
+
+const authService = getAuth(initFb); // initFb는 initFirebase()로 초기화한 Firebase 앱 객체
+//console.log(auth.currentUser); // 현재 사용자의 정보, 없으면 null
+export default authService;
 
 // Firebase 앱 초기화 함수
 export const initFirebase = () => {
   return initializeApp(firebaseConfig);
 };
 
-// 다른 Firebase 서비스를 필요한 경우에도 추가로 불러올 수 있습니다.
+

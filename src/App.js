@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import AppRouter from "./components/Router";
-import authService from 'index';
+import authService from 'fbase';
 
 function App() {
   // console.log(authService.currentUser);

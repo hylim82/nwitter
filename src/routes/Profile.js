@@ -1,5 +1,5 @@
 import React from 'react';
-import authService from 'index';
+import authService from 'fbase';
 import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
 
 const Profile = () => {
