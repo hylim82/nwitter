@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-//import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAkxXPG-9I6G6GgYjYRQeN2tCH1uobW7wc",
@@ -18,9 +17,9 @@ const firebaseConfig = {
 const initFb = initializeApp(firebaseConfig);
 // console.log(initFb);
 
-const auth = getAuth(initFb); // initFb는 initFirebase()로 초기화한 Firebase 앱 객체
+const authService = getAuth(initFb); // initFb는 initFirebase()로 초기화한 Firebase 앱 객체
 //console.log(auth.currentUser); // 현재 사용자의 정보, 없으면 null
-export default auth; 
+export default authService;
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
