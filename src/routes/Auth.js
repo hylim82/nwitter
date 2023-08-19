@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'; // Firebase Authentication 모듈 가져오기
+import { getAuth, createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, GoogleAuthProvider, GithubAuthProvider, 
+  signInWithPopup  } from 'firebase/auth'; // Firebase Authentication 모듈 가져오기
+
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -49,6 +52,27 @@ const Auth = () => {
   };
 
   const toggleAccout = () => setNewAccount((prev => !prev));
+  const onSocialClick = async(event) => {
+    // console.log(event.target.name);
+    const {target:{name}} = event; // event.name값을 name이라는 변수에 넣어주는듯
+    console.log(name);
+    // * https://firebase.google.com/docs/reference/js/v8/firebase.auth.Auth#signinwithpopup
+    // * https://firebase.google.com/docs/reference/js/v8/firebase.auth.GoogleAuthProvider
+    let provider;
+    if(name === "google") {
+      provider = new GoogleAuthProvider();
+    } else if(name === 'github') {
+      provider = new GithubAuthProvider();
+    }
+
+    try {
+      const data = await signInWithPopup(authService, provider);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+        
+  }
 
   return (
     <div>
@@ -73,8 +97,8 @@ const Auth = () => {
       </form>
       <span onClick={toggleAccout}>{newAccount ? "Sign In." :"Create Accout"}</span>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Apple</button>
+        <button onClick={onSocialClick} name="google">Continue with Google</button>
+        <button onClick={onSocialClick} name="github">Continue with Github</button>
       </div>
     </div>
   );
