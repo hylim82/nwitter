@@ -6,7 +6,6 @@ const Nweet = ({ nweetObj, isOwner }) => {
   const [editing, setEditing] = useState(false);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const onDeleteClick = async () => {
-    console.log('deltetClickAndnweetObjid:'+nweetObj.id);
     const ok = window.confirm("Are you sure you want to delete this nweet?");
     if (ok) {
       await deleteDoc(doc(dbService, `nweets/${nweetObj.id}`));
