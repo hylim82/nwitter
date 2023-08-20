@@ -20,10 +20,8 @@ const initFb = initializeApp(firebaseConfig);
 // console.log(initFb);
 
 const authService = getAuth(initFb); // initFb는 initFirebase()로 초기화한 Firebase 앱 객체
-export { authService }; // authService를 내보냄
-
 const dbService = getFirestore(initFb); // firestore를 가져옴
-export { dbService }; // dbService를 내보냄
+export { authService, dbService }; // dbService를 내보냄
 
 // Firebase 앱 초기화 함수
 export const initFirebase = () => {

@@ -1,36 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { dbService } from 'fbase';
-import { collection, addDoc, onSnapshot } from 'firebase/firestore'; // 필요한 모듈만 가져오기
-import Nweets from 'components/Nweets';
+import React, { useEffect, useState } from "react";
+import { dbService } from "fbase";
+import { collection, addDoc, onSnapshot } from "firebase/firestore"; // 필요한 모듈만 가져오기
+import Nweet from "components/Nweet";
 
-const Home = (userObj) => {
+const Home = ({userObj}) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
-
-  const getNweets = async () => {
-    const querySnapshot = await onSnapshot(collection(dbService, "nweets"), (snapshot) => {
-      const nweetArray = snapshot.docs.map(doc => ({
+  useEffect(() => {
+    // dbService.collection 대신 db.collection 사용
+    const unsubscribe = onSnapshot(collection(dbService, "nweets"), (snapshot) => {
+      const nweetArray = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
       setNweets(nweetArray);
     });
-  };
 
-  useEffect(() => {
-    getNweets();
+    // 컴포넌트가 언마운트될 때 구독 해제
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
+  
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
       // nweets 컬렉션에 새 문서 추가
-      await addDoc(collection(dbService, "nweets"), {
+      const nweetsRef = collection(dbService, "nweets");
+      await addDoc(nweetsRef, {
         text: nweet,
         createdAt: Date.now(),
-        creatorId:userObj.userId
+        creatorId: userObj.uid
       });
-
       setNweet("");
     } catch (error) {
       console.error("Error adding nweet: ", error);
@@ -38,25 +40,32 @@ const Home = (userObj) => {
   };
 
   const onChange = (event) => {
-    const { target: { value } } = event;
+    const {target:{value},} = event;
     setNweet(value);
   };
 
-  return ( 
+  return (
     <div>
       <form onSubmit={onSubmit}>
-        <input 
-          value={nweet} 
-          onChange={onChange} 
-          type="text" 
-          placeholder='What is on your mind?' 
+        <input
+          value={nweet}
+          onChange={onChange}
+          type="text"
+          placeholder="What's on your mind?"
           maxLength={120}
         />
-        <input type="submit" value="Nweet"/>
+        <input type="submit" value="Nweet" />
       </form>
-      <Nweets nweets={nweets} isOwner={userObj.userId}/>{/* Nweets 컴포넌트 사용 */}
+      <div>
+        {nweets.map((nweet) => (
+          <Nweet
+            key={nweet.id}
+            nweetObj={nweet}
+            isOwner={userObj && nweet.creatorId === userObj.uid}
+          />
+        ))}
+      </div>
     </div>
   );
 };
-
 export default Home;

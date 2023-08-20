@@ -5,7 +5,7 @@ import Home from '../routes/Home';
 import Navigation from './Navigation';
 import Profile from 'routes/Profile';
 
-const AppRouter = ({ isLoggedIn, userId }) => {
+const AppRouter = ({ isLoggedIn, userObj }) => {
   return (
     <Router>  
       {isLoggedIn && <Navigation/>}
@@ -13,7 +13,7 @@ const AppRouter = ({ isLoggedIn, userId }) => {
         {isLoggedIn ? (
           // 로그인 상태일 때 Home 컴포넌트를 렌더링
           <>
-          <Route path="/" element={<Home userId={userId}/>} />
+          <Route path="/" element={<Home userObj={userObj}/>} />
           <Route path="/profile" element={<Profile />} />
           </>
           
