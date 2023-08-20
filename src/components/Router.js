@@ -7,13 +7,13 @@ import Profile from 'routes/Profile';
 
 const AppRouter = ({ isLoggedIn, userId }) => {
   return (
-    <Router>
+    <Router>  
       {isLoggedIn && <Navigation/>}
       <Routes>
         {isLoggedIn ? (
           // 로그인 상태일 때 Home 컴포넌트를 렌더링
           <>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home userId={userId}/>} />
           <Route path="/profile" element={<Profile />} />
           </>
           

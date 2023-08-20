@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { dbService } from 'fbase';
 import { collection, addDoc, onSnapshot } from 'firebase/firestore'; // 필요한 모듈만 가져오기
+import Nweets from 'components/Nweets';
 
-const Home = () => {
+const Home = (userObj) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
 
@@ -26,7 +27,8 @@ const Home = () => {
       // nweets 컬렉션에 새 문서 추가
       await addDoc(collection(dbService, "nweets"), {
         text: nweet,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        creatorId:userObj.userId
       });
 
       setNweet("");
@@ -52,13 +54,7 @@ const Home = () => {
         />
         <input type="submit" value="Nweet"/>
       </form>
-      <div>
-        {nweets.map(n => (
-          <div key={n.id}>
-            <h4>{n.text}</h4>
-          </div>
-        ))}
-      </div>
+      <Nweets nweets={nweets} isOwner={userObj.userId}/>{/* Nweets 컴포넌트 사용 */}
     </div>
   );
 };
