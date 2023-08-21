@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { dbService } from "fbase";
-import { collection, addDoc, onSnapshot } from "firebase/firestore"; // í•„ìš”í•œ ëª¨ë“ˆë§Œ ê°€ì ¸ì˜¤ê¸°
+import { collection, addDoc, onSnapshot } from "firebase/firestore";
 import Nweet from "components/Nweet";
 
-const Home = ({userObj}) => {
+const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   useEffect(() => {
-    // dbService.collection ëŒ€ì‹  db.collection ì‚¬ìš©
+    // dbService.collection ´ë½Å db.collection »ç¿ë
     const unsubscribe = onSnapshot(collection(dbService, "nweets"), (snapshot) => {
       const nweetArray = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -16,22 +18,21 @@ const Home = ({userObj}) => {
       setNweets(nweetArray);
     });
 
-    // ì»´í¬ë„ŒíŠ¸ê°€ ì–¸ë§ˆìš´íŠ¸ë  ë•Œ êµ¬ë… í•´ì œ
+    // ÄÄÆ÷³ÍÆ®°¡ ¾ð¸¶¿îÆ®µÉ ¶§ ±¸µ¶ ÇØÁ¦
     return () => {
       unsubscribe();
     };
   }, []);
 
-  
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
-      // nweets ì»¬ë ‰ì…˜ì— ìƒˆ ë¬¸ì„œ ì¶”ê°€
+      // nweets ÄÃ·º¼Ç¿¡ »õ ¹®¼­ Ãß°¡
       const nweetsRef = collection(dbService, "nweets");
       await addDoc(nweetsRef, {
         text: nweet,
         createdAt: Date.now(),
-        creatorId: userObj.uid
+        creatorId: userObj.uid,
       });
       setNweet("");
     } catch (error) {
@@ -40,21 +41,38 @@ const Home = ({userObj}) => {
   };
 
   const onChange = (event) => {
-    const {target:{value},} = event;
+    const { target: { value } } = event;
     setNweet(value);
   };
+
+  const onFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+      console.log(file);
+    }
+  };
+
+  const onClearSelectedImage = () => setSelectedImage(null);
 
   return (
     <div>
       <form onSubmit={onSubmit}>
-        <input
-          value={nweet}
-          onChange={onChange}
-          type="text"
+        <input value={nweet} onChange={onChange} type="text"
           placeholder="What's on your mind?"
           maxLength={120}
         />
         <input type="submit" value="Nweet" />
+        <div>
+          {selectedImage && 
+            <img src={selectedImage} alt="Selected" style={{ maxWidth: "100px" }} />}
+          <input type="file" accept="image/*" onChange={onFileUpload} />
+          <button onClick={onClearSelectedImage} >Clear</button>
+        </div>
       </form>
       <div>
         {nweets.map((nweet) => (
@@ -68,4 +86,5 @@ const Home = ({userObj}) => {
     </div>
   );
 };
+
 export default Home;
