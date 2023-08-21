@@ -3,6 +3,8 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore"; // firestore 가져오는 방법 변경
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
+import { getStorage } from 'firebase/storage';
 
 // TODO : env를 사용하는 방법으로 변경필요 
 const firebaseConfig = {
@@ -16,12 +18,13 @@ const firebaseConfig = {
 };
 
 // Firebase 앱 초기화
-const initFb = initializeApp(firebaseConfig);
+const firebase = initializeApp(firebaseConfig);
 // console.log(initFb);
 
-const authService = getAuth(initFb); // initFb는 initFirebase()로 초기화한 Firebase 앱 객체
-const dbService = getFirestore(initFb); // firestore를 가져옴
-export { authService, dbService }; // dbService를 내보냄
+const authService = getAuth(firebase); // firebase는 initFirebase()로 초기화한 Firebase 앱 객체
+const dbService = getFirestore(firebase); // firestore를 가져옴
+const storageService = getStorage(firebase);
+export { authService, dbService,  storageService}; // dbService를 내보냄
 
 // Firebase 앱 초기화 함수
 export const initFirebase = () => {
