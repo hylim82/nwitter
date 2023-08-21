@@ -49,6 +49,7 @@ const Home = ({ userObj }) => {
         attachmentUrl
       });
       setNweet("");
+      setAttachment("");
     } catch (error) {
       console.error("Error adding nweet: ", error);
     }
@@ -85,7 +86,7 @@ const Home = ({ userObj }) => {
           value={nweet}
           onChange={onChange}
           type="text"
-          placeholder="What's on your mind?"
+          placeholder="공유할말을 써주세요"
           maxLength={120}
         />
         <input type="file" accept="image/*" onChange={onFileChange} />
