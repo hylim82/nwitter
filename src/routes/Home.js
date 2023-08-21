@@ -1,8 +1,10 @@
+// * 참조 : https://firebase.google.com/docs/firestore/manage-data/add-data?hl=ko
 import React, { useEffect, useState } from "react";
-import { dbService, storageService } from "fbase";
-import { collection, onSnapshot } from "firebase/firestore";
+import { dbService } from "fbase";
+import { collection, onSnapshot, addDoc } from "firebase/firestore";
 import Nweet from "components/Nweet";
-import { v4 as uuid } from "uuid";//랜덤id생성
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage"; // storage에서 필요한 함수 가져오기
+import { v4 as uuid } from "uuid";
 
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
@@ -27,22 +29,26 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    let attachmentUrl = "";
     try {
-      if(attachment !== "") {
-        const attachmentRef = storageService.ref().child(`${userObj.uid}/${uuid()}`);
-        const response = await attachmentRef.putString(attachment, "data_url");
-        attachmentUrl = await response.ref.getDownloadURL();
+      // nweets 컬렉션에 새 문서 추가
+      const nweetsRef = collection(dbService, "nweets");
+
+      let attachmentUrl = "";
+      if (attachment) {
+        const storageRef = ref(getStorage()); // storage reference 생성
+        const attachmentRef = ref(storageRef, `${userObj.uid}/${uuid()}`); // 랜덤 id 생성
+        await uploadString(attachmentRef, attachment, "data_url"); // 이미지 업로드
+
+        attachmentUrl = await getDownloadURL(attachmentRef); // 이미지 다운로드 URL 가져오기
       }
-      const nweetObj = {
+
+      await addDoc(nweetsRef, {
         text: nweet,
         createdAt: Date.now(),
         creatorId: userObj.uid,
-        attachmentUrl,
-      };
-      await dbService.collection("nweets").add(nweetObj);
+        attachmentUrl
+      });
       setNweet("");
-      setAttachment("");
     } catch (error) {
       console.error("Error adding nweet: ", error);
     }
@@ -52,6 +58,11 @@ const Home = ({ userObj }) => {
     const { target: { value } } = event;
     setNweet(value);
   };
+
+  // useState의 상태 업데이트는 비동적으로 처리되어, 확인을 위해 useEffect사용 for debug
+  // useEffect(() => {
+  //   console.log("attachment:", attachment);
+  // }, [attachment]);
 
   const onFileChange = (event) => {
     const file = event.target.files[0];

@@ -1,3 +1,4 @@
+// * 참조 : https://firebase.google.com/docs/storage/web/start?hl=ko 참조
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore"; // firestore 가져오는 방법 변경
@@ -19,14 +20,7 @@ const firebaseConfig = {
 
 // Firebase 앱 초기화
 const firebase = initializeApp(firebaseConfig);
-// console.log(initFb);
-
 const authService = getAuth(firebase); // firebase는 initFirebase()로 초기화한 Firebase 앱 객체
 const dbService = getFirestore(firebase); // firestore를 가져옴
-const storageService = getStorage(firebase);
-export { authService, dbService,  storageService}; // dbService를 내보냄
 
-// Firebase 앱 초기화 함수
-export const initFirebase = () => {
-  return initializeApp(firebaseConfig);
-};
+export { authService, dbService }; // dbService를 내보냄
