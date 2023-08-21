@@ -1,14 +1,20 @@
 import React, { useState } from "react";
-import { dbService } from "fbase";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore"; // doc 함수 가져오기
+import { dbService, storageService  } from "fbase";
+import { deleteDoc, doc, updateDoc,  } from "firebase/firestore"; // doc 함수 가져오기
+import { getStorage, ref, deleteObject} from "firebase/storage"; // storage에서 필요한 함수 가져오기
 
 const Nweet = ({ nweetObj, isOwner }) => {
   const [editing, setEditing] = useState(false);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const onDeleteClick = async () => {
-    const ok = window.confirm("Are you sure you want to delete this nweet?");
+    const ok = window.confirm("이 트윗을 지우시겠습니까?");
     if (ok) {
       await deleteDoc(doc(dbService, `nweets/${nweetObj.id}`));
+      // Storage에서 이미지 삭제
+      if (nweetObj.attachmentUrl) {
+        const storageRef = ref(storageService, nweetObj.attachmentUrl);
+        await deleteObject(storageRef);
+      }
     }
   };
   const toggleEditing = () => setEditing((prev) => !prev);
@@ -44,13 +50,18 @@ const Nweet = ({ nweetObj, isOwner }) => {
         </>
       ) : (
         <>
+          <hr/>
           <h4>{nweetObj.text}</h4>
+          {nweetObj.attachmentUrl && (
+            <img src={nweetObj.attachmentUrl} alt="" width="50px" height="50px" />
+          )}
           {isOwner && (
             <>
               <button onClick={onDeleteClick}>Delete Nweet</button>
               <button onClick={toggleEditing}>Edit Nweet</button>
             </>
           )}
+          <hr/>
         </>
       )}
     </div>

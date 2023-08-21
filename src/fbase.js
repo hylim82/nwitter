@@ -22,5 +22,10 @@ const firebaseConfig = {
 const firebase = initializeApp(firebaseConfig);
 const authService = getAuth(firebase); // firebase는 initFirebase()로 초기화한 Firebase 앱 객체
 const dbService = getFirestore(firebase); // firestore를 가져옴
+const storageService = getStorage(firebase);
 
-export { authService, dbService }; // dbService를 내보냄
+export { authService, dbService, storageService  }; // dbService를 내보냄
+export const initFirebase = () => {
+  return initializeApp(firebaseConfig);
+};
+
